@@ -6,7 +6,11 @@ if [ "$MONGO_ROLE" == "primary" ]; then
 fi
 
 mongodb_cmd="gosu mongodb mongod --storageEngine $MONGO_STORAGE_ENGINE --keyFile $MONGO_KEYFILE"
-cmd="$mongodb_cmd --httpinterface --rest --replSet $MONGO_REP_SET"
+cmd="$mongodb_cmd --httpinterface --rest"
+
+if [ "$MONGO_ENABLE_REPLICA" == true ]; then
+  cmd="$mongodb_cmd --replSet $MONGO_REP_SET"
+fi
 
 if [ "$MONGO_AUTH" == true ]; then
   cmd="$cmd --auth"
@@ -28,7 +32,7 @@ chown -R mongodb:mongodb $MONGO_DB_PATH
 
 $cmd --dbpath $MONGO_DB_PATH &
 
-if [ "$MONGO_ROLE" == "primary" ]; then
+if [ "$MONGO_ROLE" == "primary" ] && [ "$MONGO_ENABLE_REPLICA" == true ]; then
   $MONGO_SCRIPTS_DIR/mongo_setup_repset.sh
 fi
 

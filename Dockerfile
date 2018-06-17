@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM centos:7
 MAINTAINER Jeremy Shimko <jeremy.shimko@gmail.com>
 
 ENV MONGO_MAJOR 3.4
@@ -16,6 +16,7 @@ COPY scripts/install_deps.sh $MONGO_SCRIPTS_DIR/install_deps.sh
 RUN $MONGO_SCRIPTS_DIR/install_deps.sh
 
 # mongod config
+ENV MONGO_ENABLE_REPLICA true
 ENV MONGO_AUTH true
 ENV MONGO_STORAGE_ENGINE wiredTiger
 ENV MONGO_DB_PATH /data/db
